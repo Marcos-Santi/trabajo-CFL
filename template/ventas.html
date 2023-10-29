@@ -1,0 +1,115 @@
+{%include("cabecera.html")%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+    }
+    
+    h1, h2 {
+        text-align: center;
+    }
+    
+    table {
+        width: 80%;
+        margin: auto;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    
+    th, td {
+        padding: 12px;
+        text-align: left;
+    }
+    
+    th {
+        background-color: #4CAF50;
+        color: white;
+    }
+    
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    
+    tr:hover {
+        background-color: #ddd;
+    }
+    
+    form {
+        width: 50%;
+        margin: auto;
+        margin-top: 20px;
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    
+    input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+    }
+    
+    input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+    }
+    
+    a {
+        text-decoration: none;
+        color: #4CAF50;
+    }
+    
+    button {
+        background-color: #f44336;
+        color: white;
+        padding: 8px 12px;
+        border: none;
+        cursor: pointer;
+    }
+    
+    button:hover {
+        background-color: #d32f2f;
+    }
+    
+    button:active {
+        background-color: #f44336;
+    }
+    </style>
+</head>
+<body>
+    
+    
+    <br>
+    <h2>Agregar Nueva Venta</h2>
+    <form action="/ventas" method="post">
+        <input type="hidden" name="id" value="id"> <!-- Cambia "some_value" por un valor específico o un campo oculto en tu base de datos -->
+        <label for="nombre_pj">Nombre de personaje:</label>
+        <input type="text" id="nombre_pj" name="nombre_pj"><br><br>
+        <label for="fuerza">Fuerza:</label>
+        <input type="text" id="fuerza" name="fuerza"><br><br>
+        <label for="agilidad">Agilidad:</label>
+        <input type="text" id="agilidad" name="agilidad"><br><br>
+        <label for="constitucion">Constitución:</label>
+        <input type="text" id="constitucion" name="constitucion"><br><br>
+        <label for="energia">Energía:</label>
+        <input type="text" id="energia" name="energia"><br><br>
+        <label for="comando">Comando:</label>
+        <input type="text" id="comando" name="comando"><br><br>
+        <label for="precio">Precio:</label>
+        <input type="text" id="precio" name="precio"><br><br>
+        <input type="submit" value="Agregar Venta">
+    </form>
+    
+</body>
+</html>

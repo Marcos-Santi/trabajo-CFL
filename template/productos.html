@@ -1,0 +1,56 @@
+{%include("cabecera.html")%}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>CRUD Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    
+    <div class="container">
+        <h2>Lista de Artículos</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                   
+                    <th>Nombre</th>
+                    <th>Fuerza</th>
+                    <th>Agilidad</th>
+                    <th>Constitución</th>
+                    <th>Agilidad</th>
+                    <th>Comando</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in articles %}
+                <tr>
+                    
+                    <td>{{ article.nombre_pj }}</td>
+                    <td>{{article.fuerza}}</td>
+                    <td>{{article.agilidad}}</td>
+                    <td>{{article.constitucion}}</td>
+                    <td>{{article.energia}}</td>
+                    <td>{{article.comando}}</td>
+                    <td>{{ article.descripcion }}</td>
+                    <td>{{ article.precio }}</td>
+                    <td>
+                        <a href="/editar/{{ article.id }}" class="btn btn-primary">Editar</a>
+                        <form action="/productos/eliminar/{{ article.id }}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="/agregar" class="btn btn-success">Agregar Nuevo Artículo</a>
+    </div>
+</body>
+
+</html>
