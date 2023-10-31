@@ -92,7 +92,7 @@
     
     <br>
     <h2>Agregar Nueva Venta</h2>
-    <form action="/ventas" method="post">
+    <form action="/ventas" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id" value="id"> <!-- Cambia "some_value" por un valor específico o un campo oculto en tu base de datos -->
         <label for="nombre_pj">Nombre de personaje:</label>
         <input type="text" id="nombre_pj" name="nombre_pj"><br><br>
@@ -108,6 +108,10 @@
         <input type="text" id="comando" name="comando"><br><br>
         <label for="precio">Precio:</label>
         <input type="text" id="precio" name="precio"><br><br>
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" name="descripcion" rows="4" cols="50"></textarea><br><br>
+        <label for="imagen">Seleccionar imagen:</label>
+        <input type="file" id="imagen" name="imagen"><br><br>
         <input type="submit" value="Agregar Venta">
     </form>
     
