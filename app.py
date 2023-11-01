@@ -72,6 +72,7 @@ def ventas():
     elif request.method == 'POST':
         detalles_venta = request.form
         nombre_pj = detalles_venta['nombre_pj']
+        tipo_pj = detalles_venta["tipo_pj"]
         fuerza = detalles_venta['fuerza']
         agilidad = detalles_venta['agilidad']
         constitucion = detalles_venta['constitucion']
@@ -84,10 +85,10 @@ def ventas():
         imagen = request.files['imagen']
         # Asegúrate de guardar la imagen en la ubicación deseada
         # Aquí, puedes usar una biblioteca como Pillow para procesar la imagen si es necesario
-        print(imagen)
+        
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO pj_venta (nombre_pj, fuerza, agilidad, constitucion, energia, comando, precio, descripcion, imagen) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                    (nombre_pj, fuerza, agilidad, constitucion, energia, comando, precio, descripcion, imagen.filename))
+        cur.execute("INSERT INTO pj_venta (nombre_pj,tipo_pj, fuerza, agilidad, constitucion, energia, comando, precio, descripcion, imagen) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                    (nombre_pj,tipo_pj, fuerza, agilidad, constitucion, energia, comando, precio, descripcion, imagen.filename))
         mysql.connection.commit()
         cur.close()
         return redirect('/productos')
@@ -114,10 +115,11 @@ def eliminar_venta(id):
 #Ruta editar
 @app.route('/editar_ventas/<int:id>', methods=['GET', 'POST'])
 def editar_articulo(id):
-    print(id)
+    
     cursor = mysql.connection.cursor()
     if request.method == 'POST':
         nombre_pj = request.form['nombre_pj']
+        tipo_pj = request.form['tipo_pj']
         fuerza = request.form['fuerza']
         agilidad = request.form['agilidad']
         constitucion = request.form['constitucion']
@@ -128,9 +130,9 @@ def editar_articulo(id):
         imagen = request.form['imagen']
         cursor.execute("""
             UPDATE pj_venta
-            SET nombre_pj = %s, fuerza = %s, agilidad = %s, constitucion = %s, energia = %s, comando = %s, descripcion = %s, precio = %s, imagen = %s
+            SET nombre_pj = %s,tipo_pj = %s, fuerza = %s, agilidad = %s, constitucion = %s, energia = %s, comando = %s, descripcion = %s, precio = %s, imagen = %s
             WHERE id = %s
-        """, (nombre_pj, fuerza, agilidad, constitucion, energia, comando, descripcion, precio, imagen, id))
+        """, (nombre_pj, tipo_pj, fuerza, agilidad, constitucion, energia, comando, descripcion, precio, imagen, id))
         mysql.connection.commit()
         return redirect('/productos') 
     cursor.execute('SELECT * FROM pj_venta WHERE id = %s', (id,))
