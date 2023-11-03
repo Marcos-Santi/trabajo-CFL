@@ -38,10 +38,10 @@ def login ():
             session["logged"] = True
             session["id"] = account["id"]
             
-            return render_template("admin.html")
+            return render_template("index.html")
         else: 
     
-            return render_template("index.html")
+            return render_template("login.html")
         
 #funcion de registro
 @app.route("/registro")
@@ -115,7 +115,7 @@ def eliminar_venta(id):
 #Ruta editar
 @app.route('/editar_ventas/<int:id>', methods=['GET', 'POST'])
 def editar_articulo(id):
-    
+    print(id)
     cursor = mysql.connection.cursor()
     if request.method == 'POST':
         nombre_pj = request.form['nombre_pj']
@@ -138,6 +138,17 @@ def editar_articulo(id):
     cursor.execute('SELECT * FROM pj_venta WHERE id = %s', (id,))
     article = cursor.fetchone()
     return render_template('editar_ventas.html', article=article)
+
+#ruta para ver los productos a vender
+# Ruta para mostrar la lista de productos
+# Ruta para mostrar la lista de productos
+@app.route('/vista_productos', methods=['GET'])
+def mostrar_productos_a():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM pj_venta")
+    productos = cur.fetchall()
+    cur.close()
+    return render_template('vista_productos.html', productos=productos)
 
 
 if __name__ == "__main__":
