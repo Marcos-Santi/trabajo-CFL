@@ -70,10 +70,13 @@
         {% for producto in productos %}
         <div class="item">
             <h3>{{ producto.nombre }}</h3>
-            <img src="{{ producto.imagen }}" alt="{{ producto.nombre_pj }}" style="max-width: 200px; max-height: 200px;">
+            <img src="{% if producto.nombre in imagenes_predeterminadas %}{{ imagenes_predeterminadas[producto.nombre] }}{% else %}{{ url_for('static', filename='default.jpg') }}{% endif %}" alt="{{ producto.nombre_pj }}" style="max-width: 200px; max-height: 200px;">
+
+
+
             <p>{{ producto.descripcion }}</p>
             <p>Precio: {{ producto.precio }}</p>
-            <a href="/ver/{{ producto.id }}"><button>Ver</button></a>
+            <a href="/comprar/{{ producto.id }}"><button>Ver</button></a>
             <a href="/comprar/{{ producto.id }}"><button>Comprar</button></a>
         </div>
         {% endfor %}

@@ -22,6 +22,7 @@ def home ():
 def admin ():
     return render_template("admin.html")
 
+
 #funcion del loguin
 @app.route("/acceso-login", methods= ["GET","POST"])
 def login ():
@@ -41,7 +42,7 @@ def login ():
             return render_template("index.html")
         else: 
     
-            return render_template("login.html")
+            return render_template("/vista_productos.html")
         
 #funcion de registro
 @app.route("/registro")
@@ -87,7 +88,7 @@ def ventas():
         # Aquí, puedes usar una biblioteca como Pillow para procesar la imagen si es necesario
         
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO pj_venta (nombre_pj,tipo_pj, fuerza, agilidad, constitucion, energia, comando, precio, descripcion, imagen) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        cur.execute("INSERT INTO pj_venta (nombre_pj,tipo_pj, fuerza, agilidad, constitucion, energia, comando, precio, descripcion, imagen) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s,%s)",
                     (nombre_pj,tipo_pj, fuerza, agilidad, constitucion, energia, comando, precio, descripcion, imagen.filename))
         mysql.connection.commit()
         cur.close()
@@ -117,9 +118,9 @@ def eliminar_venta(id):
 def editar_articulo(id):
     print(id)
     cursor = mysql.connection.cursor()
-    if request.method == 'POST':
+    if request.method == 'POST':        
         nombre_pj = request.form['nombre_pj']
-        tipo_pj = request.form['tipo_pj']
+        tipo_pj = request.form['tipo_pj']      
         fuerza = request.form['fuerza']
         agilidad = request.form['agilidad']
         constitucion = request.form['constitucion']
@@ -130,7 +131,7 @@ def editar_articulo(id):
         imagen = request.form['imagen']
         cursor.execute("""
             UPDATE pj_venta
-            SET nombre_pj = %s,tipo_pj = %s, fuerza = %s, agilidad = %s, constitucion = %s, energia = %s, comando = %s, descripcion = %s, precio = %s, imagen = %s
+            SET nombre_pj = %s,tipo_pj = %s,, fuerza = %s, agilidad = %s, constitucion = %s, energia = %s, comando = %s, descripcion = %s, precio = %s, imagen = %s
             WHERE id = %s
         """, (nombre_pj, tipo_pj, fuerza, agilidad, constitucion, energia, comando, descripcion, precio, imagen, id))
         mysql.connection.commit()
@@ -148,7 +149,23 @@ def mostrar_productos_a():
     cur.execute("SELECT * FROM pj_venta")
     productos = cur.fetchall()
     cur.close()
-    return render_template('vista_productos.html', productos=productos)
+    imagenes_predeterminadas = {
+        "Blade King": r"C:\Users\Usuario\Desktop\proyecto\demo\static\logo.jpg",
+        "Soul Master": r"C:\Users\Usuario\Desktop\proyecto\demo\imagenes\logo.jpg",
+        "Muse Elf": r"C:\Users\Usuario\Desktop\proyecto\demo\imagenes\logo.jpg",
+        "Magic Gladiator": r"C:\Users\Usuario\Desktop\proyecto\demo\imagenes\logo.jpg",
+        "Dark Lord": r"C:\Users\Usuario\Desktop\proyecto\demo\imagenes\logo.jpg",
+    }
+    return render_template('vista_productos.html', productos=productos, imagenes_predeterminadas=imagenes_predeterminadas)
+
+ #Ruta para ver los detalles de una venta específica
+@app.route('/comprar/<int:id>', methods=['GET'])
+def comprar(id):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM pj_venta WHERE id=%s", (id,))
+    venta = cur.fetchone()
+    cur.close()
+    return render_template('comprar.html', venta=venta)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,73 @@
+{% include "cabecera.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de Venta</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        
+        h2 {
+            text-align: center;
+        }
+        
+        .container {
+            width: 50%;
+            margin: auto;
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+        }
+        
+        img {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            height: auto;
+        }
+        
+        p {
+            margin: 10px 0;
+        }
+        
+        button {
+            background-color: #f44336;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+        }
+        
+        button:hover {
+            background-color: #d32f2f;
+        }
+        
+        button:active {
+            background-color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <h2>Detalles de la Venta</h2>
+    <div class="container">
+        <img src="{{ url_for('static', filename=venta.imagen) }}" alt="Imagen del personaje">
+        <p><strong>Nombre de personaje:</strong> {{ venta.nombre_pj }}</p>
+        <p><strong>Tipo de personaje:</strong> {{ venta.tipo_pj }}</p>
+        <p><strong>Fuerza:</strong> {{ venta.fuerza }}</p>
+        <p><strong>Agilidad:</strong> {{ venta.agilidad }}</p>
+        <p><strong>Constitución:</strong> {{ venta.constitucion }}</p>
+        <p><strong>Energía:</strong> {{ venta.energia }}</p>
+        <p><strong>Comando:</strong> {{ venta.comando }}</p>
+        <p><strong>Precio:</strong> {{ venta.precio }}</p>
+        <p><strong>Descripción:</strong> {{ venta.descripcion }}</p>
+        <button>Comprar</button>
+    </div>
+</body>
+</html>

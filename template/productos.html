@@ -16,7 +16,7 @@
             <thead>
                 <tr>
                    
-                    <th>Nombre</th>
+                    <th>Nombre</th>                   
                     <th>Personaje</th>
                     <th>Fuerza</th>
                     <th>Agilidad</th>
@@ -32,15 +32,15 @@
                 {% for article in articles %}
                 <tr>
                     
-                    <td>{{ article.nombre_pj }}</td>
+                    <td>{{article.nombre_pj }}</td>
                     <td>{{article.tipo_pj}}</td>
                     <td>{{article.fuerza}}</td>
                     <td>{{article.agilidad}}</td>
                     <td>{{article.constitucion}}</td>
                     <td>{{article.energia}}</td>
                     <td>{{article.comando}}</td>
-                    <td>{{ article.descripcion }}</td>
-                    <td>{{ article.precio }}</td>
+                    <td>{{article.descripcion }}</td>
+                    <td>{{article.precio }}</td>
                     <td> <img src="{{ article.imagen }}" alt="Imagen del artículo" style="max-width:100px; max-height:100px;"></td>
                     <td>
                         <a href="/editar_ventas/{{ article.id }}" class="btn btn-primary">Editar</a>
