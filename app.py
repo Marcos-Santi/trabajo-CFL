@@ -1,5 +1,5 @@
 from flask import Flask 
-from flask import render_template, redirect, request, Response, session, url_for
+from flask import render_template, redirect, request, Response, session, url_for, session
 from flask_mysqldb import MySQL, MySQLdb
 
 app = Flask(__name__, template_folder="template")
@@ -23,26 +23,33 @@ def admin ():
     return render_template("admin.html")
 
 
-#funcion del loguin
-@app.route("/acceso-login", methods= ["GET","POST"])
-def login ():
-    
-    if request.method == "POST" and "txtCorreo" in request.form and "txtPassword":
-        _correo = request.form ["txtCorreo"]
-        _password = request.form ["txtPassword"]
-        
-        cur=mysql.connect.cursor()
-        cur.execute("SELECT * FROM usuarios WHERE correo = %s AND PASSWORD = %s",(_correo,_password))
+# Función para iniciar sesión de usuario
+@app.route("/acceso-login", methods=[ "POST"])
+def login():
+    if request.method == "POST" and "txtCorreo" in request.form and "txtPassword" in request.form:
+        _correo = request.form["txtCorreo"]
+        _password = request.form["txtPassword"]
+
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM usuarios WHERE correo = %s AND password = %s", (_correo, _password))
         account = cur.fetchone()
-        
+
         if account:
             session["logged"] = True
             session["id"] = account["id"]
-            
+            session["correo"] = account["correo"]
+            return redirect('/vista_productos')
+        else:
             return render_template("index.html")
-        else: 
-    
-            return render_template("/vista_productos.html")
+        
+# Función para cerrar sesión
+@app.route('/logout')
+def logout():
+    session.pop('logged', None)
+    session.pop('id', None)
+    session.pop("correo", None)
+    return redirect('/')
+
         
 #funcion de registro
 @app.route("/registro")
@@ -66,7 +73,7 @@ def crear_registro():
 def ventas():
     if request.method == 'GET':
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM pj_venta")
+        cur.execute("SELECT * FROM pj_venta WHERE usuario=%s", (session["correo"],))
         data = cur.fetchall()
         cur.close()
         return render_template('ventas.html', data=data)
@@ -81,6 +88,8 @@ def ventas():
         comando = detalles_venta["comando"]
         precio = detalles_venta["precio"]
         descripcion = detalles_venta["descripcion"]
+        usuario = session["correo"]
+        print(session["correo"])
 
         # Manejar la carga de la imagen
         imagen = request.files['imagen']
@@ -88,8 +97,8 @@ def ventas():
         # Aquí, puedes usar una biblioteca como Pillow para procesar la imagen si es necesario
         
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO pj_venta (nombre_pj,tipo_pj, fuerza, agilidad, constitucion, energia, comando, precio, descripcion, imagen) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s,%s)",
-                    (nombre_pj,tipo_pj, fuerza, agilidad, constitucion, energia, comando, precio, descripcion, imagen.filename))
+        cur.execute("INSERT INTO pj_venta (nombre_pj,tipo_pj, fuerza, agilidad, constitucion, energia, comando, precio, descripcion, imagen, usuario) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)",
+                    (nombre_pj,tipo_pj, fuerza, agilidad, constitucion, energia, comando, precio, descripcion, imagen.filename, usuario))
         mysql.connection.commit()
         cur.close()
         return redirect('/productos')
@@ -98,11 +107,14 @@ def ventas():
  #Ruta para mostrar la lista de productos
 @app.route('/productos', methods=['GET'])
 def mostrar_productos():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM pj_venta")
-    articles = cur.fetchall()
-    cur.close()
-    return render_template('productos.html', articles=articles) 
+    if "logged" in session and session["logged"]:
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM pj_venta WHERE usuario=%s", (session["correo"],))
+        articles = cur.fetchall()
+        cur.close()
+        return render_template('productos.html', articles=articles) 
+    else:
+        return redirect("/")
 
 #Ruta para eliminar
 @app.route('/productos/eliminar/<int:id>', methods=['POST'])
@@ -131,7 +143,7 @@ def editar_articulo(id):
         imagen = request.form['imagen']
         cursor.execute("""
             UPDATE pj_venta
-            SET nombre_pj = %s,tipo_pj = %s,, fuerza = %s, agilidad = %s, constitucion = %s, energia = %s, comando = %s, descripcion = %s, precio = %s, imagen = %s
+            SET nombre_pj = %s,tipo_pj = %s, fuerza = %s, agilidad = %s, constitucion = %s, energia = %s, comando = %s, descripcion = %s, precio = %s, imagen = %s
             WHERE id = %s
         """, (nombre_pj, tipo_pj, fuerza, agilidad, constitucion, energia, comando, descripcion, precio, imagen, id))
         mysql.connection.commit()
@@ -145,22 +157,24 @@ def editar_articulo(id):
 # Ruta para mostrar la lista de productos
 @app.route('/vista_productos', methods=['GET'])
 def mostrar_productos_a():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM pj_venta")
-    productos = cur.fetchall()
-    cur.close()
-    imagenes_predeterminadas = {
-        "Blade King": r"C:\Users\Usuario\Desktop\proyecto\demo\static\logo.jpg",
-        "Soul Master": r"C:\Users\Usuario\Desktop\proyecto\demo\imagenes\logo.jpg",
-        "Muse Elf": r"C:\Users\Usuario\Desktop\proyecto\demo\imagenes\logo.jpg",
-        "Magic Gladiator": r"C:\Users\Usuario\Desktop\proyecto\demo\imagenes\logo.jpg",
-        "Dark Lord": r"C:\Users\Usuario\Desktop\proyecto\demo\imagenes\logo.jpg",
-    }
-    return render_template('vista_productos.html', productos=productos, imagenes_predeterminadas=imagenes_predeterminadas)
-
+    if "logged" in session and session["logged"]:
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM pj_venta")
+        productos = cur.fetchall()
+        cur.close()
+        imagenes_predeterminadas = {
+            "Blade King": r"C:/Users/Usuario\Desktop\proyecto\demo\static\logo.jpg",
+            "Soul Master": r"C:\Users\Usuario\Desktop\proyecto\demo\imagenes\logo.jpg",
+            "Muse Elf": r"C:\Users\Usuario\Desktop\proyecto\demo\imagenes\logo.jpg",
+            "Magic Gladiator": r"C:\Users\Usuario\Desktop\proyecto\demo\imagenes\logo.jpg",
+            "Dark Lord": r"C:\Users\Usuario\Desktop\proyecto\demo\imagenes\logo.jpg",
+        }
+        return render_template('vista_productos.html', productos=productos, imagenes_predeterminadas=imagenes_predeterminadas)
+    else:
+        return redirect("/")
  #Ruta para ver los detalles de una venta específica
 @app.route('/comprar/<int:id>', methods=['GET'])
-def comprar(id):
+def detalle_venta(id):
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM pj_venta WHERE id=%s", (id,))
     venta = cur.fetchone()
